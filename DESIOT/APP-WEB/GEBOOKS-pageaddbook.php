@@ -210,16 +210,35 @@
                 $lebar = $_POST['lebar'];
                 $panjang = $_POST['panjang'];
 
-                // Query dengan prepared statement untuk menghindari SQL Injection
-                $stmt = $connBook->prepare("INSERT INTO buku (judul, penulis, sisa_buku, sinopsis, penerbit, isbn, bahasa, berat, halaman, lebar, panjang) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                $stmt->bind_param("ssissisiiii", $judul, $penulis, $sisa_buku, $sinopsis, $penerbit, $isbn, $bahasa, $berat, $halaman, $lebar, $panjang);
+                // Menangani upload cover buku
+                $cover = $_FILES['cover']['name'];
+                $cover_tmp = $_FILES['cover']['tmp_name'];
+                $cover_folder = "uploads/" . basename($cover);
 
-                if ($stmt->execute()) {
-                    echo "<div class='alert alert-success text-center'>Data buku berhasil ditambahkan!</div>";
+                if (isset($_FILES['cover']) && $_FILES['cover']['error'] == 0) {
+                    $cover = $_FILES['cover']['name'];
+                    $cover_tmp = $_FILES['cover']['tmp_name'];
+                    $cover_folder = "images/" . basename($cover);
+                
+                    if (move_uploaded_file($cover_tmp, $cover_folder)) {
+                        // Lanjutkan dengan query ke database
+                        $stmt = $connBook->prepare("INSERT INTO buku (judul, penulis, sisa_buku, sinopsis, penerbit, isbn, bahasa, berat, halaman, lebar, panjang, cover) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                        $stmt->bind_param("ssissisiiiis", $judul, $penulis, $sisa_buku, $sinopsis, $penerbit, $isbn, $bahasa, $berat, $halaman, $lebar, $panjang, $cover);
+                
+                        if ($stmt->execute()) {
+                            echo "<div class='alert alert-success text-center'>Data buku berhasil ditambahkan!</div>";
+                        } else {
+                            echo "<div class='alert alert-danger text-center'>Terjadi kesalahan, data tidak dapat disimpan.</div>";
+                        }
+                
+                        $stmt->close();
+                    } else {
+                        echo "<div class='alert alert-danger text-center'>Gagal mengunggah cover buku.</div>";
+                    }
                 } else {
-                    echo "<div class='alert alert-danger text-center'>Terjadi kesalahan, data tidak dapat disimpan.</div>";
+                    echo "<div class='alert alert-danger text-center'>Tidak ada file cover yang diunggah atau terjadi kesalahan saat unggah.</div>";
                 }
-                $stmt->close();
+                
 
                 // Tutup koneksi
                 mysqli_close($connBook);
@@ -227,7 +246,8 @@
             ?>
 
 
-            <form action="" method="POST">
+
+            <form action="" method="POST" enctype="multipart/form-data">
                 <div class="form-group mb-3">
                     <label for="judul">Judul Buku</label>
                     <input type="text" class="form-control" id="judul" name="judul" placeholder="Masukkan judul buku" required>
@@ -237,6 +257,12 @@
                     <label for="penulis">Penulis</label>
                     <input type="text" class="form-control" id="penulis" name="penulis" placeholder="Masukkan nama penulis" required>
                 </div>
+
+                <div class="form-group mb-3">
+                    <label for="cover">Cover Buku</label>
+                    <input type="file" class="form-control" id="cover" name="cover" accept="image/*" required>
+                </div>
+
 
                 <div class="form-group mb-3">
                     <label for="sisa_buku">Sisa Buku</label>

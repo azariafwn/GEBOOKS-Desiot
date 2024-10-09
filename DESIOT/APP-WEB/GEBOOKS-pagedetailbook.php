@@ -23,6 +23,7 @@ if (!$buku) {
     echo "Buku tidak ditemukan!";
     exit();
 }
+
 ?>
 
 
@@ -209,7 +210,7 @@ if (!$buku) {
     <!-- Konten -->
     <div class="container mt-5 d-flex justify-content-center align-items-center flex-column" style="min-height: 80vh;">
         <!-- Gambar Persegi Panjang di Tengah -->
-        <img src="images/cover-themirrorcrack.jpeg" alt="Content Image" class="content-image mt-4">
+        <img src="images/<?php echo htmlspecialchars($buku['cover']); ?>" alt="Cover Buku" class="content-image mt-4">
         <button class="button-pinjam" id="pinjamButton">PINJAM</button>
 
         <!-- Informasi Buku di bawah tombol -->

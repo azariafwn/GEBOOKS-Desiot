@@ -1,0 +1,11 @@
+DESIOT
+minggu depan presentasi yg akan dikerjain
+10 menit,10 slide per kelompok, pagi pas kelas sama malem zoom
+buat aplikasi iot. kayak jarkom kemaren. bedanya pake http, harus pake UI. pake NoteRed
+permasalahan, manfaat aplikasi, sensor nya apa, mockup ui/ux (mobile & desktop)
+prototype aja yg penting jalan
+sensor mengikuti aplikasi yg digunakan, sensor boleh sama aplikasi nya beda.
+
+minggu 9 demo tugas 1
+
+http = protocol yg digunakan untuk transfer data app web

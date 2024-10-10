@@ -49,13 +49,6 @@ if ($result->num_rows > 0) {
             font-family: Barlow, sans-serif;
         }
 
-        .gebooks-text {
-            font-weight: bold;
-            font-family: Verdana, Geneva, Tahoma, sans-serif;
-            font-size: large;
-            margin-left: 35px;
-        }
-
         .search-icon {
             font-size: 1.5rem;
             cursor: pointer;
@@ -63,20 +56,10 @@ if ($result->num_rows > 0) {
             margin-left: 10px;
         }
 
-        .profile-icon {
-            width: 2rem;
-            height: 2rem;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-right: 10px;
-            margin-left: 10px;
-        }
-
         .gebooks-text {
             font-weight: bold;
             font-family: Verdana, Geneva, Tahoma, sans-serif;
             font-size: large;
-            margin-left: 35px;
         }
 
         .search-form {
@@ -154,10 +137,10 @@ if ($result->num_rows > 0) {
 
         /* Custom Logout Button Styles */
         .logout-button {
-            display: inline-block;
+            width: 200px;
             padding: 10px 20px;
             margin-top: 20px;
-            background-color: #ff4757;
+            background-color: red;
             color: white;
             border: none;
             border-radius: 5px;
@@ -167,7 +150,7 @@ if ($result->num_rows > 0) {
         }
 
         .logout-button:hover {
-            background-color: #e84118;
+            background-color: rgb(200, 30, 30);
         }
 
         /* Footer Styles */
@@ -238,10 +221,10 @@ if ($result->num_rows > 0) {
                     <span class="gebooks-text">Gebooks</span>
                 </a>
             </div>
-            <!-- Kanan: Icon Profil -->
-            <div class="d-flex align-items-center">
-                <img src="images/profil.jpeg" alt="Profile" class="profile-icon">
-            </div>
+            <!-- Ikon Buku untuk Akses ke Halaman Library -->
+            <a href="GEBOOKS-library.php">
+                <i class="bi bi-book book-icon fs-4 me-2"></i>
+            </a>
         </div>
     </nav>
 
@@ -287,7 +270,10 @@ if ($result->num_rows > 0) {
             </div>
 
             <!-- Tombol Logout -->
-            <a href="GEBOOKS-pagelogin.php" class="logout-button">Logout</a>
+        <div class="d-flex justify-content-center">
+            <a href="GEBOOKS-logout.php" class="logout-button">Logout</a>
+        </div>
+
         </div>
 
 

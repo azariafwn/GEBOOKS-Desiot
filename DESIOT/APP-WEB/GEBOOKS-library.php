@@ -1,3 +1,15 @@
+<?php
+session_start(); // Memulai sesi
+
+// Mengambil data peminjaman buku
+$bukuDipinjam = [];
+if (isset($_SESSION['peminjaman']) && !empty($_SESSION['peminjaman'])) {
+    $bukuDipinjam = $_SESSION['peminjaman'];
+} else {
+    $bukuDipinjam = null; // Untuk menandakan tidak ada buku yang dipinjam
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -37,58 +49,7 @@
             font-weight: bold;
             font-family: Verdana, Geneva, Tahoma, sans-serif;
             font-size: large;
-            margin-left: 35px;
-        }
-
-        .content-image {
-            width: 40%;
-            max-width: 300px;
-            height: auto;
-        }
-
-        .book-cover {
-            width: 100%;
-            height: 90%;
-            display: block;
-            margin: 0 auto;
-            position: relative;
-        }
-
-        .book-title {
-            text-align: center;
-            margin-top: 10px; 
-            margin-bottom: 20px;
-            font-weight: bold;
-            font-size: 1.5rem;
-            color: #333;
-        }
-
-        /* Media query untuk menyesuaikan ukuran font berdasarkan panjang judul */
-        @media (max-width: 576px) {
-            .book-title {
-                font-size: 1.1rem; /* Ukuran font untuk layar kecil */
-            }
-        }
-
-        .btn-addBook {
-            background-color: white;
-            color: black;
-            font-family: Barlow, sans-serif;
-            font-weight: bold;
-            font-size: 1.2rem;
-            margin-top: 16px;
-            border-radius: 40px;
-            border-color: black;
-            padding-top: 6px;
-            padding-bottom: 6px;
-            padding-left: 50px;
-            padding-right: 50px;
-        }
-
-        .btn-addBook:hover {
-            background-color: rgb(223, 220, 255);
-            color: white;
-            border-color: rgb(223, 220, 255);
+            margin-left: 20px;
         }
 
         .search-form {
@@ -159,6 +120,27 @@
             font-size: 14px;
             color: #6c757d;
         }
+
+        /* Custom styles for book card */
+        .card {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            padding: 15px;
+            border: 1px solid #e7e7e7;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .card img {
+            width: 80px; /* Ukuran gambar lebih kecil */
+            height: auto;
+            margin-right: 15px; /* Jarak antara gambar dan teks */
+        }
+
+        .card-body {
+            flex: 1; /* Memungkinkan teks mengisi ruang yang tersedia */
+        }
     </style>
 </head>
 
@@ -183,10 +165,6 @@
             </div>
             <!-- Kanan: Icon Buku dan Profil -->
             <div class="d-flex align-items-center">
-                <!-- Ikon Buku untuk Akses ke Halaman Library -->
-                <a href="GEBOOKS-library.php">
-                    <i class="bi bi-book book-icon fs-4 me-2"></i>
-                </a>
                 <!-- Icon Profil -->
                 <a href="GEBOOKS-pageprofile.php">
                     <img src="images/profil.jpeg" alt="Profile" class="profile-icon">
@@ -195,6 +173,28 @@
 
         </div>
     </nav>
+
+    <!-- Konten -->
+    <div class="container mt-5">
+        <h1>Daftar Buku yang Dipinjam</h1>
+        <div class="row">
+            <?php if ($bukuDipinjam): ?>
+                <?php foreach ($bukuDipinjam as $buku): ?>
+                    <div class="col-12">
+                        <div class="card">
+                            <img src="images/<?php echo htmlspecialchars($buku['cover']); ?>" class="card-img-top" alt="<?php echo htmlspecialchars($buku['judul']); ?>">
+                            <div class="card-body">
+                                <h5 class="card-title"><?php echo htmlspecialchars($buku['judul']); ?></h5>
+                                <p class="card-text">Penulis: <?php echo htmlspecialchars($buku['penulis']); ?></p>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <p>Anda belum meminjam buku apapun.</p>
+            <?php endif; ?>
+        </div>
+    </div>
 
     <!-- Bootstrap 5 JS dan Popper.js -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>

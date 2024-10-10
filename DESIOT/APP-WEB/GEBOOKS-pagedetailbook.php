@@ -39,6 +39,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['pinjam_buku'])) {
         $update_query->bind_param("ii", $sisa_buku, $id_buku);
         $update_query->execute();
 
+        // Simpan informasi peminjaman di session
+        $_SESSION['peminjaman'][] = [
+            'id' => $buku['id'],
+            'judul' => $buku['judul'],
+            'cover' => $buku['cover'],
+            'penulis' => $buku['penulis']
+        ];
+
         // Redirect ke halaman detail buku dengan status sukses
         header("Location: GEBOOKS-pagedetailbook.php?id=$id_buku&pinjam=success");
         exit();
@@ -53,6 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['pinjam_buku'])) {
         exit();
     }
 }
+
 
 ?>
 

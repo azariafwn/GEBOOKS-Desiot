@@ -8,7 +8,7 @@ $id_buku = $_GET['id'];
 // Jika user belum login, simpan ID buku di session dan redirect ke halaman login
 if (!isset($_SESSION['user_id'])) {
     $_SESSION['id_buku'] = $id_buku; // Simpan ID buku di session
-    header("Location: GEBOOKS-login.php?redirect=detail-buku");
+    header("Location: GEBOOKS-pagelogin.php?redirect=detail-buku");
     exit();
 }
 

@@ -49,6 +49,13 @@ if ($result->num_rows > 0) {
             font-family: Barlow, sans-serif;
         }
 
+        .gebooks-text {
+            font-weight: bold;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            font-size: large;
+            margin-left: 35px;
+        }
+
         .search-icon {
             font-size: 1.5rem;
             cursor: pointer;
@@ -163,7 +170,6 @@ if ($result->num_rows > 0) {
             background-color: #e84118;
         }
 
-
         /* Footer Styles */
         footer {
             background-color: #f8f9fa;
@@ -229,7 +235,6 @@ if ($result->num_rows > 0) {
             <!-- Tengah: Logo dan Nama Aplikasi -->
             <div class="center-logo mx-auto">
                 <a href="GEBOOKS-homepage.php" class="text-decoration-none d-flex align-items-center justify-content-center">
-                    <img src="images/logo.png" alt="Gebooks" width="40" height="40">
                     <span class="gebooks-text">Gebooks</span>
                 </a>
             </div>

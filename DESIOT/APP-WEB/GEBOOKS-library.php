@@ -196,61 +196,6 @@
         </div>
     </nav>
 
-    <!-- Konten -->
-    <!-- Book List Section -->
-    <div class="container my-5">
-            <div class="row g-5">
-            <!-- First Row of Books -->
-            <div class="col-6 col-md-3">
-                <img src="images/cover-duniasophie.jpeg" alt="Book 1" class="book-cover">
-                <div class="book-title">Dunia Sophie</div>
-            </div>
-            <div class="col-6 col-md-3">
-                <a href="GEBOOKS-pagedetailbook.php?id=2">
-                    <img src="images/cover-edwardtulane.jpeg" alt="Book 2" class="book-cover">
-                    <div class="book-title">The Miraculous Journey of Edward Tulane</div>
-                </a>
-            </div>
-            <div class="col-6 col-md-3">
-                <img src="images/cover-tanahparabandit.jpeg" alt="Book 3" class="book-cover">
-                <div class="book-title">Tanah Para Bandit</div>
-            </div>
-            <div class="col-6 col-md-3">
-                <a href="GEBOOKS-pagedetailbook.php?id=1">
-                    <img src="images/cover-themirrorcrack.jpeg" alt="Book 4" class="book-cover">
-                    <div class="book-title">The Mirror Crack'd from Side to Side</div>
-                </a>
-            </div>
-
-            <!-- Second Row of Books -->
-            <div class="col-6 col-md-3">
-                <img src="images/cover-duniasophie.jpeg" alt="Book 5" class="book-cover">
-                <div class="book-title">Dunia Sophie</div>
-            </div>
-            <div class="col-6 col-md-3">
-                <img src="images/cover-pergi.jpeg" alt="Book 6" class="book-cover">
-                <div class="book-title">Pergi</div>
-            </div>
-            <div class="col-6 col-md-3">
-                <img src="images/cover-tanahparabandit.jpeg" alt="Book 7" class="book-cover">
-                <div class="book-title">Tanah Para Bandit</div>
-            </div>
-            <div class="col-6 col-md-3">
-                <a href="GEBOOKS-pagedetailbook.php?id=1">
-                    <img src="images/cover-themirrorcrack.jpeg" alt="Book 8" class="book-cover">
-                    <div class="book-title">The Mirror Crack'd from Side to Side</div>
-                </a>
-            </div>
-        </div>
-
-        <!-- Tombol Tambah Buku -->
-        <div class="text-center my-6 mt-5">
-            <a href="GEBOOKS-pageaddbook.php" class="btn btn-addBook">Tambah Buku</a>
-        </div>
-
-    </div>
-
-
     <!-- Bootstrap 5 JS dan Popper.js -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.min.js"></script>

@@ -17,6 +17,12 @@
             background-color: #f8f9fa;
         }
 
+        .gebooks-text {
+            font-weight: bold;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            font-size: large;
+        }
+
         .form-container {
             margin-top: 50px;
             padding: 40px;
@@ -81,7 +87,6 @@
     <nav class="navbar navbar-light bg-light py-3 sticky-top shadow">
         <div class="container-fluid">
             <div class="center-logo mx-auto">
-                <img src="images/logo.png" alt="Gebooks" width="40" height="40">
                 <span class="gebooks-text">Gebooks</span>
             </div>
         </div>

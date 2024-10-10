@@ -222,8 +222,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['pinjam_buku'])) {
                     <span class="gebooks-text">Gebooks</span>
                 </a>
             </div>
-            <!-- Kanan: Icon Profil -->
+            <!-- Kanan: Icon Buku dan Profil -->
             <div class="d-flex align-items-center">
+                <!-- Ikon Buku untuk Akses ke Halaman Library -->
+                <a href="GEBOOKS-library.php">
+                    <i class="bi bi-book book-icon fs-4 me-2"></i>
+                </a>
+                <!-- Icon Profil -->
                 <a href="GEBOOKS-pageprofile.php">
                     <img src="images/profil.jpeg" alt="Profile" class="profile-icon">
                 </a>

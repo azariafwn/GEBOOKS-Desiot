@@ -25,23 +25,19 @@
         }
 
         .profile-icon {
-            width: 35px;
-            height: 35px;
+            width: 2rem;
+            height: 2rem;
             border-radius: 50%;
             object-fit: cover;
             margin-right: 10px;
-        }
-
-        .center-logo {
-            display: flex;
-            align-items: center;
+            margin-left: 10px;
         }
 
         .gebooks-text {
             font-weight: bold;
             font-family: Verdana, Geneva, Tahoma, sans-serif;
-            font-size: larger;
-            margin-left: 10px;
+            font-size: large;
+            margin-left: 35px;
         }
 
         .content-image {
@@ -94,8 +90,6 @@
             color: white;
             border-color: rgb(223, 220, 255);
         }
-
-
 
         .search-form {
             display: none;
@@ -184,12 +178,16 @@
             <!-- Tengah: Logo dan Nama Aplikasi -->
             <div class="center-logo mx-auto">
                 <a href="GEBOOKS-homepage.php" class="text-decoration-none d-flex align-items-center justify-content-center">
-                    <img src="images/logo.png" alt="Gebooks" width="40" height="40">
                     <span class="gebooks-text">Gebooks</span>
                 </a>
             </div>
-            <!-- Kanan: Icon Profil -->
+            <!-- Kanan: Icon Buku dan Profil -->
             <div class="d-flex align-items-center">
+                <!-- Ikon Buku untuk Akses ke Halaman Library -->
+                <a href="GEBOOKS-library.php">
+                    <i class="bi bi-book book-icon fs-4 me-2"></i>
+                </a>
+                <!-- Icon Profil -->
                 <a href="GEBOOKS-pageprofile.php">
                     <img src="images/profil.jpeg" alt="Profile" class="profile-icon">
                 </a>
@@ -208,15 +206,17 @@
                 <div class="book-title">Dunia Sophie</div>
             </div>
             <div class="col-6 col-md-3">
-                <img src="images/cover-pergi.jpeg" alt="Book 2" class="book-cover">
-                <div class="book-title">Pergi</div>
+                <a href="GEBOOKS-pagedetailbook.php?id=2">
+                    <img src="images/cover-edwardtulane.jpeg" alt="Book 2" class="book-cover">
+                    <div class="book-title">The Miraculous Journey of Edward Tulane</div>
+                </a>
             </div>
             <div class="col-6 col-md-3">
                 <img src="images/cover-tanahparabandit.jpeg" alt="Book 3" class="book-cover">
                 <div class="book-title">Tanah Para Bandit</div>
             </div>
             <div class="col-6 col-md-3">
-                <a href="GEBOOKS-pagedetailbook.php">
+                <a href="GEBOOKS-pagedetailbook.php?id=1">
                     <img src="images/cover-themirrorcrack.jpeg" alt="Book 4" class="book-cover">
                     <div class="book-title">The Mirror Crack'd from Side to Side</div>
                 </a>
@@ -236,8 +236,10 @@
                 <div class="book-title">Tanah Para Bandit</div>
             </div>
             <div class="col-6 col-md-3">
-                <img src="images/cover-themirrorcrack.jpeg" alt="Book 8" class="book-cover">
-                <div class="book-title">The Mirror Crack'd from Side to Side</div>
+                <a href="GEBOOKS-pagedetailbook.php?id=1">
+                    <img src="images/cover-themirrorcrack.jpeg" alt="Book 8" class="book-cover">
+                    <div class="book-title">The Mirror Crack'd from Side to Side</div>
+                </a>
             </div>
         </div>
 

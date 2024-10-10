@@ -25,23 +25,19 @@
         }
 
         .profile-icon {
-            width: 35px;
-            height: 35px;
+            width: 2rem;
+            height: 2rem;
             border-radius: 50%;
             object-fit: cover;
             margin-right: 10px;
-        }
-
-        .center-logo {
-            display: flex;
-            align-items: center;
+            margin-left: 10px;
         }
 
         .gebooks-text {
             font-weight: bold;
             font-family: Verdana, Geneva, Tahoma, sans-serif;
-            font-size: larger;
-            margin-left: 10px;
+            font-size: large;
+            margin-left: 35px;
         }
 
         .form-container {
@@ -173,7 +169,6 @@
             <!-- Tengah: Logo dan Nama Aplikasi -->
             <div class="center-logo mx-auto">
                 <a href="GEBOOKS-homepage.php" class="text-decoration-none d-flex align-items-center justify-content-center">
-                    <img src="images/logo.png" alt="Gebooks" width="40" height="40">
                     <span class="gebooks-text">Gebooks</span>
                 </a>
             </div>
@@ -209,6 +204,7 @@
                 $halaman = $_POST['halaman'];
                 $lebar = $_POST['lebar'];
                 $panjang = $_POST['panjang'];
+                $kategori = $_POST['kategori'];
 
                 // Menangani upload cover buku
                 $cover = $_FILES['cover']['name'];
@@ -222,8 +218,8 @@
                 
                     if (move_uploaded_file($cover_tmp, $cover_folder)) {
                         // Lanjutkan dengan query ke database
-                        $stmt = $connBook->prepare("INSERT INTO buku (judul, penulis, sisa_buku, sinopsis, penerbit, isbn, bahasa, berat, halaman, lebar, panjang, cover) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                        $stmt->bind_param("ssissisiiiis", $judul, $penulis, $sisa_buku, $sinopsis, $penerbit, $isbn, $bahasa, $berat, $halaman, $lebar, $panjang, $cover);
+                        $stmt = $connBook->prepare("INSERT INTO buku (judul, penulis, sisa_buku, sinopsis, penerbit, isbn, bahasa, berat, halaman, lebar, panjang, cover, kategori) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                        $stmt->bind_param("ssissisiiiiss", $judul, $penulis, $sisa_buku, $sinopsis, $penerbit, $isbn, $bahasa, $berat, $halaman, $lebar, $panjang, $cover, $kategori);
                 
                         if ($stmt->execute()) {
                             echo "<div class='alert alert-success text-center'>Data buku berhasil ditambahkan!</div>";
@@ -277,6 +273,11 @@
                 <div class="form-group mb-3">
                     <label for="penerbit">Penerbit</label>
                     <input type="text" class="form-control" id="penerbit" name="penerbit" placeholder="Masukkan nama penerbit" required>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="penerbit">Kategori</label>
+                    <input type="text" class="form-control" id="kategori" name="kategori" placeholder="Masukkan kategori buku" required>
                 </div>
 
                 <div class="form-group mb-3">

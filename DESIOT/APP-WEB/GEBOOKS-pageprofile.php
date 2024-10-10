@@ -57,23 +57,19 @@ if ($result->num_rows > 0) {
         }
 
         .profile-icon {
-            width: 35px;
-            height: 35px;
+            width: 2rem;
+            height: 2rem;
             border-radius: 50%;
             object-fit: cover;
             margin-right: 10px;
-        }
-
-        .center-logo {
-            display: flex;
-            align-items: center;
+            margin-left: 10px;
         }
 
         .gebooks-text {
             font-weight: bold;
             font-family: Verdana, Geneva, Tahoma, sans-serif;
-            font-size: larger;
-            margin-left: 10px;
+            font-size: large;
+            margin-left: 35px;
         }
 
         .search-form {

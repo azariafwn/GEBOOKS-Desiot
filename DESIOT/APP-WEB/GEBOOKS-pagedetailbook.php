@@ -5,7 +5,7 @@ include 'connect.php';
 // Ambil ID buku dari URL
 $id_buku = $_GET['id'];
 
-// Jika user belum login, simpan ID buku di session dan redirect ke halaman login
+// Cek apakah user sudah login
 if (!isset($_SESSION['user_id'])) {
     $_SESSION['id_buku'] = $id_buku; // Simpan ID buku di session
     header("Location: GEBOOKS-pagelogin.php?redirect=detail-buku");
@@ -24,8 +24,37 @@ if (!$buku) {
     exit();
 }
 
-?>
+// Ambil informasi stok buku
+$sisa_buku = (int) $buku['sisa_buku'];
 
+// Proses peminjaman buku
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['pinjam_buku'])) {
+    // Cek apakah user sudah login dan stok buku masih ada
+    if (isset($_SESSION['user_id']) && $sisa_buku > 0) {
+        // Kurangi sisa buku
+        $sisa_buku--;
+
+        // Update jumlah sisa buku di database
+        $update_query = $connBook->prepare("UPDATE buku SET sisa_buku = ? WHERE id = ?");
+        $update_query->bind_param("ii", $sisa_buku, $id_buku);
+        $update_query->execute();
+
+        // Redirect ke halaman detail buku dengan status sukses
+        header("Location: GEBOOKS-pagedetailbook.php?id=$id_buku&pinjam=success");
+        exit();
+    } elseif ($sisa_buku <= 0) {
+        // Jika stok habis, set session untuk menampilkan modal dan redirect
+        $_SESSION['stok_habis'] = true;
+        header("Location: GEBOOKS-pagedetailbook.php?id=$id_buku");
+        exit();
+    } else {
+        // Jika user belum login, redirect ke halaman login
+        header("Location: GEBOOKS-pagelogin.php");
+        exit();
+    }
+}
+
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -54,23 +83,19 @@ if (!$buku) {
         }
 
         .profile-icon {
-            width: 35px;
-            height: 35px;
+            width: 2rem;
+            height: 2rem;
             border-radius: 50%;
             object-fit: cover;
             margin-right: 10px;
-        }
-
-        .center-logo {
-            display: flex;
-            align-items: center;
+            margin-left: 10px;
         }
 
         .gebooks-text {
             font-weight: bold;
             font-family: Verdana, Geneva, Tahoma, sans-serif;
-            font-size: larger;
-            margin-left: 10px;
+            font-size: large;
+            margin-left: 35px;
         }
 
         .content-image {
@@ -194,7 +219,6 @@ if (!$buku) {
             <!-- Tengah: Logo dan Nama Aplikasi -->
             <div class="center-logo mx-auto">
                 <a href="GEBOOKS-homepage.php" class="text-decoration-none d-flex align-items-center justify-content-center">
-                    <img src="images/logo.png" alt="Gebooks" width="40" height="40">
                     <span class="gebooks-text">Gebooks</span>
                 </a>
             </div>
@@ -211,7 +235,11 @@ if (!$buku) {
     <div class="container mt-5 d-flex justify-content-center align-items-center flex-column" style="min-height: 80vh;">
         <!-- Gambar Persegi Panjang di Tengah -->
         <img src="images/<?php echo htmlspecialchars($buku['cover']); ?>" alt="Cover Buku" class="content-image mt-4">
-        <button class="button-pinjam" id="pinjamButton">PINJAM</button>
+        
+        <!-- Tombol Pinjam -->
+        <form method="POST">
+            <button type="submit" name="pinjam_buku" class="button-pinjam">PINJAM</button>
+        </form>
 
         <!-- Informasi Buku di bawah tombol -->
         <div class="text-start mt-4 px-4" style="width: 100%;">
@@ -240,72 +268,77 @@ if (!$buku) {
                     <p><strong>Halaman:</strong> <?php echo htmlspecialchars($buku['halaman']); ?> </p>
                     <p><strong>Lebar:</strong> <?php echo htmlspecialchars($buku['lebar']); ?> cm</p>
                     <p><strong>Panjang:</strong> <?php echo htmlspecialchars($buku['panjang']); ?> cm</p>
+                    <p><strong>Kategori:</strong> <?php echo htmlspecialchars($buku['kategori']); ?> </p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal Login Berhasil -->
-    <div class="modal fade" id="loginSuccessModal" tabindex="-1" aria-labelledby="loginSuccessModalLabel" aria-hidden="true">
+    <!-- Modal Success Peminjaman -->
+    <div class="modal fade" id="pinjamSuccessModal" tabindex="-1" aria-labelledby="pinjamSuccessLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="loginSuccessModalLabel">Login Berhasil</h5>
+                    <h5 class="modal-title" id="pinjamSuccessLabel"><strong>Peminjaman Berhasil</strong></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    Anda telah berhasil login! Selamat datang kembali.
+                    Buku berhasil dipinjam! 
+                    <br>Jangan lupa mengembalikan tepat waktu ya!
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Tutup</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal Peminjaman Berhasil -->
-    <div class="modal fade" id="pinjamSuccessModal" tabindex="-1" aria-labelledby="pinjamSuccessModalLabel" aria-hidden="true">
+    <!-- Modal Stok Habis -->
+    <div class="modal fade" id="stokHabisModal" tabindex="-1" aria-labelledby="stokHabisLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="pinjamSuccessModalLabel">Peminjaman Berhasil</h5>
+                    <h5 class="modal-title" id="stokHabisLabel"><strong>Stok Buku Habis</strong></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    Buku berhasil dipinjam!
+                    Maaf, stok buku saat ini habis. 
+                    <br>Silakan cek kembali nanti!
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Tutup</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Bootstrap 5 JS dan Popper.js -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.min.js"></script>
 
-    <script>
-        // Cek URL untuk parameter pinjam
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.has('pinjam') && urlParams.get('pinjam') === 'success') {
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Script untuk membuka modal ketika peminjaman berhasil -->
+    <?php
+    if (isset($_GET['pinjam']) && $_GET['pinjam'] === 'success') {
+        echo "<script>
             const pinjamModal = new bootstrap.Modal(document.getElementById('pinjamSuccessModal'));
             pinjamModal.show();
-        }
+        </script>";
+    }
+    ?>
 
-        // Menangani klik tombol Pinjam
-        document.getElementById('pinjamButton').addEventListener('click', function () {
-            const isLoggedIn = <?php echo isset($_SESSION['user_id']) ? 'true' : 'false'; ?>; // Menggunakan PHP untuk mengecek login
-            if (isLoggedIn) {
-                const pinjamModal = new bootstrap.Modal(document.getElementById('pinjamSuccessModal'));
-                pinjamModal.show();
-                // Tambahkan logika peminjaman di sini
-            } else {
-                alert('Silakan login terlebih dahulu untuk meminjam buku.');
-                window.location.href = 'GEBOOKS-pagelogin.php?redirect=detail-buku';
-            }
-        });
+    <!-- Script untuk membuka modal ketika stok habis -->
+    <?php
+    if (isset($_SESSION['stok_habis'])) {
+        echo "<script>
+            const stokHabisModal = new bootstrap.Modal(document.getElementById('stokHabisModal'));
+            stokHabisModal.show();
+        </script>";
+        unset($_SESSION['stok_habis']); // Hapus session setelah ditampilkan
+    }
+    ?>
 
+
+    <script>
         // Menangani ikon pencarian
         document.getElementById('searchIcon').addEventListener('click', function () {
             const searchForm = document.getElementById('searchForm');
@@ -335,6 +368,7 @@ if (!$buku) {
         <div class="footer-contact">Email: info@gebooks.com | Telepon: 123-456-7890</div>
         <div class="footer-copyright">© 2024 Gebooks. All rights reserved.</div>
     </footer>
+
 </body>
 
 </html>

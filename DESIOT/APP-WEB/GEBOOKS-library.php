@@ -1,12 +1,25 @@
 <?php
 session_start(); // Memulai sesi
+include 'connect.php';
 
 // Mengambil data peminjaman buku
 $bukuDipinjam = [];
-if (isset($_SESSION['peminjaman']) && !empty($_SESSION['peminjaman'])) {
-    $bukuDipinjam = $_SESSION['peminjaman'];
+if (isset($_SESSION['user_id'])) {
+    $query = $connBook->prepare("SELECT p.*, b.cover AS cover_buku, b.judul AS judul_buku, b.penulis AS penulis_buku FROM peminjaman p JOIN buku b ON p.id_buku = b.id WHERE p.id_user = ?");
+    $query->bind_param("i", $_SESSION['user_id']);
+    $query->execute();
+    $result = $query->get_result();
+    $bukuDipinjam = $result->fetch_all(MYSQLI_ASSOC);
 } else {
-    $bukuDipinjam = null; // Untuk menandakan tidak ada buku yang dipinjam
+    $bukuDipinjam = null; // Tidak ada buku yang dipinjam
+}
+
+// Fungsi menghitung countdown
+function hitungCountdown($tanggalKembali) {
+    $tanggalSekarang = new DateTime(); // Waktu sekarang
+    $tanggalKembali = new DateTime($tanggalKembali);
+    $interval = $tanggalSekarang->diff($tanggalKembali);
+    return $interval->format('%a hari lagi'); // Sisa hari
 }
 ?>
 
@@ -126,20 +139,41 @@ if (isset($_SESSION['peminjaman']) && !empty($_SESSION['peminjaman'])) {
             display: flex;
             flex-direction: row;
             align-items: center;
-            padding: 15px;
+            padding: 12px;
             border: 1px solid #e7e7e7;
             border-radius: 8px;
             margin-bottom: 15px;
         }
 
         .card img {
-            width: 80px; /* Ukuran gambar lebih kecil */
+            width: 100px; /* Ukuran gambar lebih kecil */
             height: auto;
-            margin-right: 15px; /* Jarak antara gambar dan teks */
+            margin-right: 10px; /* Jarak antara gambar dan teks */
         }
 
         .card-body {
             flex: 1; /* Memungkinkan teks mengisi ruang yang tersedia */
+        }
+
+        /* button kembalikan buku */
+        .button-kembalikan {
+            background-color: white;
+            color: black;
+            font-family: Barlow, sans-serif;
+            font-weight: bold;
+            margin-top: 16px;
+            border-radius: 40px;
+            border-color: black;
+            padding-top: 6px;
+            padding-bottom: 6px;
+            padding-left: 50px;
+            padding-right: 50px;
+        }
+
+        .button-kembalikan:hover {
+            background-color: rgb(223, 220, 255);
+            color: white;
+            border-color: rgb(223, 220, 255);
         }
     </style>
 </head>
@@ -180,12 +214,30 @@ if (isset($_SESSION['peminjaman']) && !empty($_SESSION['peminjaman'])) {
         <div class="row">
             <?php if ($bukuDipinjam): ?>
                 <?php foreach ($bukuDipinjam as $buku): ?>
-                    <div class="col-12">
+                    <div class="col-12 col-md-6">
                         <div class="card">
-                            <img src="images/<?php echo htmlspecialchars($buku['cover']); ?>" class="card-img-top" alt="<?php echo htmlspecialchars($buku['judul']); ?>">
+                        <img src="images/<?php echo htmlspecialchars($buku['cover_buku']); ?>" class="card-img-top" alt="<?php echo htmlspecialchars($buku['judul_buku']); ?>">
                             <div class="card-body">
-                                <h5 class="card-title"><?php echo htmlspecialchars($buku['judul']); ?></h5>
-                                <p class="card-text">Penulis: <?php echo htmlspecialchars($buku['penulis']); ?></p>
+                                <h5 class="card-title"><strong><?php echo htmlspecialchars($buku['judul_buku']); ?></strong></h5>
+                                <p class="card-text mb-1">Penulis: <?php echo htmlspecialchars($buku['penulis_buku']); ?></p>
+                                
+                                <!-- Status Buku -->
+                                <p class="card-text mb-1">Status: <?php echo $buku['status']; ?></p>
+                                
+                                <!-- Tanggal Pinjam -->
+                                <p class="card-text mb-1">Tanggal Pinjam: <?php echo $buku['tanggal_pinjam']; ?></p>
+                                
+                                <!-- Tanggal Kembali -->
+                                <p class="card-text mb-1">Tanggal Kembali: <?php echo $buku['tanggal_kembali']; ?></p>
+                                
+                                <!-- Countdown Sisa Waktu -->
+                                <p class="card-text mb-1">Sisa Waktu: <?php echo hitungCountdown($buku['tanggal_kembali']); ?></p>
+
+                                <!-- Tombol Kembalikan Buku -->
+                                <form action="kembalikan_buku.php" method="POST">
+                                    <input type="hidden" name="buku_id" value="<?php echo $buku['id_buku']; ?>">
+                                    <button type="submit" class="button-kembalikan">Kembalikan Buku</button>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -210,12 +262,10 @@ if (isset($_SESSION['peminjaman']) && !empty($_SESSION['peminjaman'])) {
         // Menutup form pencarian ketika mengklik di luar
         document.addEventListener('click', function (event) {
             const searchForm = document.getElementById('searchForm');
-            const searchIcon = document.getElementById('searchIcon');
-            if (!searchForm.contains(event.target) && !searchIcon.contains(event.target)) {
+            if (!searchForm.contains(event.target) && event.target.id !== 'searchIcon') {
                 searchForm.classList.remove('show-search');
             }
         });
-
     </script>
 
     <!-- Footer -->
@@ -223,13 +273,14 @@ if (isset($_SESSION['peminjaman']) && !empty($_SESSION['peminjaman'])) {
         <img src="images/logo.png" alt="Logo" class="footer-logo">
         <div class="footer-text">Gebooks</div>
         <div class="footer-links">
-            <a href="#">Tentang Kami</a>
+            <a href="#">Tentang</a>
             <a href="#">Kontak</a>
-            <a href="#">Kebijakan Privasi</a>
+            <a href="#">Bantuan</a>
         </div>
-        <div class="footer-contact">Email: info@gebooks.com | Telepon: 123-456-7890</div>
-        <div class="footer-copyright">© 2024 Gebooks. All rights reserved.</div>
+        <div class="footer-contact">Email: support@gebooks.com | Telepon: 123-456-7890</div>
+        <div class="footer-copyright">&copy; 2024 Gebooks. All Rights Reserved.</div>
     </footer>
+
 </body>
 
 </html>

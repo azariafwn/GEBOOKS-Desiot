@@ -15,7 +15,7 @@ if (!isset($_SESSION['user_id'])) {
 $user_id = $_SESSION['user_id'];
 
 // Query untuk mengambil data user berdasarkan user_id
-$sql = "SELECT name, email, phone, nik, dob, address FROM registration WHERE id = ?";
+$sql = "SELECT name, email, phone, nik, dob, address FROM user WHERE id = ?";
 $stmt = $connUser->prepare($sql);
 $stmt->bind_param("i", $user_id);
 $stmt->execute();

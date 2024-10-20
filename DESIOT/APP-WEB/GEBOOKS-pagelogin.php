@@ -107,7 +107,7 @@
                 $password = $_POST['password'];
 
                 // Query untuk mengambil data user berdasarkan email
-                $stmt = $connUser->prepare("SELECT * FROM registration WHERE email = ?");
+                $stmt = $connUser->prepare("SELECT * FROM user WHERE email = ?");
                 $stmt->bind_param("s", $email);
                 $stmt->execute();
                 $result = $stmt->get_result();

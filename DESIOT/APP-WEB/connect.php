@@ -13,7 +13,7 @@ if (!$connUser) {
 }
 
 // Koneksi ke database buku
-$connBook = new mysqli("localhost", "root", "", "database_buku");
+$connBook = new mysqli("localhost", "root", "", "gebooks");
 if (!$connBook) {
     die("Koneksi database buku gagal: " . mysqli_connect_error());
 }

@@ -34,18 +34,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['pinjam_buku'])) {
         // Kurangi sisa buku
         $sisa_buku--;
 
+        // Set tanggal pinjam dan tanggal kembali
+        $tanggal_pinjam = date('Y-m-d');
+        $tanggal_kembali = date('Y-m-d', strtotime('+7 days'));
+
         // Update jumlah sisa buku di database
         $update_query = $connBook->prepare("UPDATE buku SET sisa_buku = ? WHERE id = ?");
         $update_query->bind_param("ii", $sisa_buku, $id_buku);
         $update_query->execute();
 
-        // Simpan informasi peminjaman di session
-        $_SESSION['peminjaman'][] = [
-            'id' => $buku['id'],
-            'judul' => $buku['judul'],
-            'cover' => $buku['cover'],
-            'penulis' => $buku['penulis']
-        ];
+        // Simpan informasi peminjaman di tabel peminjaman
+        $insert_query = $connBook->prepare("INSERT INTO peminjaman (id_user, id_buku, judul_buku, penulis_buku, tanggal_pinjam, tanggal_kembali) VALUES (?, ?, ?, ?, ?, ?)");
+        $insert_query->bind_param("iissss", $_SESSION['user_id'], $buku['id'], $buku['judul'], $buku['penulis'], $tanggal_pinjam, $tanggal_kembali);
+        $insert_query->execute();
 
         // Redirect ke halaman detail buku dengan status sukses
         header("Location: GEBOOKS-pagedetailbook.php?id=$id_buku&pinjam=success");
@@ -61,6 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['pinjam_buku'])) {
         exit();
     }
 }
+
 
 
 ?>

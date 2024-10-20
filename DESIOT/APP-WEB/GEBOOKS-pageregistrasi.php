@@ -116,7 +116,7 @@
                 if ($password === $confirm_password) {
 
                     // Query dengan prepared statement untuk menghindari SQL Injection
-                    $stmt = $connUser->prepare("INSERT INTO registration (name, email, NIK, phone, dob, address, password) VALUES (?, ?, ?, ?, ?, ?, ?)");
+                    $stmt = $connUser->prepare("INSERT INTO user (name, email, NIK, phone, dob, address, password) VALUES (?, ?, ?, ?, ?, ?, ?)");
                     $stmt->bind_param("ssiisss", $name, $email, $NIK, $phone, $dob, $address, $password);
 
                     if ($stmt->execute()) {

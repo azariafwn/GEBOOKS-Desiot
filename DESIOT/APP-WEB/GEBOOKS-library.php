@@ -21,7 +21,27 @@ function hitungCountdown($tanggalKembali) {
     $interval = $tanggalSekarang->diff($tanggalKembali);
     return $interval->format('%a hari lagi'); // Sisa hari
 }
+
+// Fungsi untuk mengembalikan buku
+function kembalikanBuku($bukuId, $userId) {
+    global $connBook; // Pastikan koneksi database diakses
+
+    // Hapus peminjaman dari tabel peminjaman
+    $queryDelete = $connBook->prepare("DELETE FROM peminjaman WHERE id_buku = ? AND id_user = ?");
+    $queryDelete->bind_param("ii", $bukuId, $userId);
+    $deleteSuccess = $queryDelete->execute();
+
+    // Tambah sisa buku di tabel buku
+    if ($deleteSuccess) {
+        $queryUpdate = $connBook->prepare("UPDATE buku SET sisa_buku = sisa_buku + 1 WHERE id = ?");
+        $queryUpdate->bind_param("i", $bukuId);
+        return $queryUpdate->execute();
+    }
+    
+    return false; // Jika ada kesalahan
+}
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -220,21 +240,13 @@ function hitungCountdown($tanggalKembali) {
                             <div class="card-body">
                                 <h5 class="card-title"><strong><?php echo htmlspecialchars($buku['judul_buku']); ?></strong></h5>
                                 <p class="card-text mb-1">Penulis: <?php echo htmlspecialchars($buku['penulis_buku']); ?></p>
-                                
-                                <!-- Status Buku -->
                                 <p class="card-text mb-1">Status: <?php echo $buku['status']; ?></p>
-                                
-                                <!-- Tanggal Pinjam -->
                                 <p class="card-text mb-1">Tanggal Pinjam: <?php echo $buku['tanggal_pinjam']; ?></p>
-                                
-                                <!-- Tanggal Kembali -->
                                 <p class="card-text mb-1">Tanggal Kembali: <?php echo $buku['tanggal_kembali']; ?></p>
-                                
-                                <!-- Countdown Sisa Waktu -->
                                 <p class="card-text mb-1">Sisa Waktu: <?php echo hitungCountdown($buku['tanggal_kembali']); ?></p>
 
                                 <!-- Tombol Kembalikan Buku -->
-                                <form action="kembalikan_buku.php" method="POST">
+                                <form action="GEBOOKS-pagereturnbook.php" method="POST">
                                     <input type="hidden" name="buku_id" value="<?php echo $buku['id_buku']; ?>">
                                     <button type="submit" class="button-kembalikan">Kembalikan Buku</button>
                                 </form>
@@ -247,6 +259,13 @@ function hitungCountdown($tanggalKembali) {
             <?php endif; ?>
         </div>
     </div>
+
+    <?php if (isset($_GET['return']) && $_GET['return'] == 'success'): ?>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            Buku berhasil dikembalikan!
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php endif; ?>
 
     <!-- Bootstrap 5 JS dan Popper.js -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>

@@ -31,6 +31,19 @@ $sisa_buku = (int) $buku['sisa_buku'];
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['pinjam_buku'])) {
     // Cek apakah user sudah login dan stok buku masih ada
     if (isset($_SESSION['user_id']) && $sisa_buku > 0) {
+        // Cek apakah pengguna sudah meminjam buku ini sebelumnya
+        $check_query = $connBook->prepare("SELECT * FROM peminjaman WHERE id_user = ? AND id_buku = ?");
+        $check_query->bind_param("ii", $_SESSION['user_id'], $id_buku);
+        $check_query->execute();
+        $check_result = $check_query->get_result();
+
+        if ($check_result->num_rows > 0) {
+            // Jika sudah meminjam, set session untuk menampilkan modal dan redirect
+            $_SESSION['buku_sama'] = true;
+            header("Location: GEBOOKS-pagedetailbook.php?id=$id_buku");
+            exit();
+        }
+
         // Kurangi sisa buku
         $sisa_buku--;
 
@@ -309,6 +322,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['pinjam_buku'])) {
         </div>
     </div>
 
+    <!-- Modal untuk Peminjaman Buku Sudah Dipinjam -->
+    <div class="modal fade" id="bukuSamaModal" tabindex="-1" aria-labelledby="bukuSamaLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="bukuSamaLabel"><strong>Peminjaman Buku Gagal</strong></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Kamu sudah meminjam buku ini sebelumnya.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <!-- Modal Stok Habis -->
     <div class="modal fade" id="stokHabisModal" tabindex="-1" aria-labelledby="stokHabisLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -341,6 +373,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['pinjam_buku'])) {
         </script>";
     }
     ?>
+
+    <!-- Script untuk membuka modal ketika pengguna sudah meminjam buku yang sama -->
+    <?php
+    if (isset($_SESSION['buku_sama'])) {
+        echo "<script>
+            const bukuSamaModal = new bootstrap.Modal(document.getElementById('bukuSamaModal'));
+            bukuSamaModal.show();
+        </script>";
+        unset($_SESSION['buku_sama']); // Hapus session setelah ditampilkan
+    }
+    ?>
+
 
     <!-- Script untuk membuka modal ketika stok habis -->
     <?php

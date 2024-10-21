@@ -5,7 +5,7 @@ include 'connect.php';
 // Mengambil data peminjaman buku
 $bukuDipinjam = [];
 if (isset($_SESSION['user_id'])) {
-    $query = $connBook->prepare("SELECT p.*, b.cover AS cover_buku, b.judul AS judul_buku, b.penulis AS penulis_buku FROM peminjaman p JOIN buku b ON p.id_buku = b.id WHERE p.id_user = ?");
+    $query = $connBook->prepare("SELECT p.*, b.cover AS cover_buku, b.judul AS judul_buku, b.uid AS uid_buku, b.penulis AS penulis_buku FROM peminjaman p JOIN buku b ON p.id_buku = b.id WHERE p.id_user = ?");
     $query->bind_param("i", $_SESSION['user_id']);
     $query->execute();
     $result = $query->get_result();

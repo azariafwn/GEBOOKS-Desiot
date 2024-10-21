@@ -57,8 +57,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['pinjam_buku'])) {
         $update_query->execute();
 
         // Simpan informasi peminjaman di tabel peminjaman
-        $insert_query = $connBook->prepare("INSERT INTO peminjaman (id_user, id_buku, judul_buku, penulis_buku, tanggal_pinjam, tanggal_kembali) VALUES (?, ?, ?, ?, ?, ?)");
-        $insert_query->bind_param("iissss", $_SESSION['user_id'], $buku['id'], $buku['judul'], $buku['penulis'], $tanggal_pinjam, $tanggal_kembali);
+        $insert_query = $connBook->prepare("INSERT INTO peminjaman (id_user, id_buku, judul_buku, penulis_buku, uid_buku, tanggal_pinjam, tanggal_kembali) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        $insert_query->bind_param("iisssss", $_SESSION['user_id'], $buku['id'], $buku['judul'], $buku['penulis'], $buku['uid'], $tanggal_pinjam, $tanggal_kembali);
         $insert_query->execute();
 
         // Redirect ke halaman detail buku dengan status sukses

@@ -229,7 +229,7 @@ function kembalikanBuku($bukuId, $userId) {
     </nav>
 
     <!-- Konten -->
-    <div class="container mt-5">
+    <div class="container mt-4">
         <h1>Daftar Buku yang Dipinjam</h1>
         <div class="row">
             <?php if ($bukuDipinjam): ?>

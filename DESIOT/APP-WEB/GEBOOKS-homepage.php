@@ -212,8 +212,10 @@
                 </a>
             </div>
             <div class="col-6 col-md-3">
-                <img src="images/cover-tanahparabandit.jpeg" alt="Book 3" class="book-cover">
-                <div class="book-title">Tanah Para Bandit</div>
+                <a href="GEBOOKS-pagedetailbook.php?id=3">
+                    <img src="images/cover-tanahparabandit.jpeg" alt="Book 3" class="book-cover">
+                    <div class="book-title">Tanah Para Bandit</div>
+                </a>
             </div>
             <div class="col-6 col-md-3">
                 <a href="GEBOOKS-pagedetailbook.php?id=1">

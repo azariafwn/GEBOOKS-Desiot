@@ -16,7 +16,8 @@ Sistem GEBOOKS menggunakan arsitektur Client-Server yang terdiri dari tiga kompo
 3.  **Klien Pengembalian (IoT Device)**: Sebuah perangkat yang terdiri dari **Arduino Uno** dan **NFC Reader PN532**. Perangkat ini didedikasikan untuk proses pengembalian buku. Ketika buku dipindai, perangkat mengirimkan data ke server untuk memperbarui status buku.
 4.  **Database**: Menggunakan **MySQL** untuk menyimpan semua data terkait pengguna, katalog buku, dan riwayat transaksi peminjaman.
 
-**[Klik di sini untuk melihat topologi GEBOOKS di Google Drive](https://drive.google.com/file/d/1eG5Z_itcUjEezCaKO1tHEEUfdJ70IaT_/view?usp=sharing)**
+Berikut adalah Topologi jaringan untuk sistem GEBOOKS
+![Skema Rangkaian](topologi.jpg)
 
 ---
 
